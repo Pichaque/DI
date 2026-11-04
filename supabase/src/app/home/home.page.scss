@@ -1,0 +1,23 @@
+.role-chip {
+  --padding-start: 6px;
+  --padding-end: 6px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.form-error {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.readonly-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}

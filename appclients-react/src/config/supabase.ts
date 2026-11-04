@@ -1,0 +1,12 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+console.log('Variables de Supabase:');
+console.log('URL:', supabaseUrl);
+console.log('KEY:', supabaseKey ? 'Cargada correctamente' : 'No encontrada');
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+console.log(supabase)

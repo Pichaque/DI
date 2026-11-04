@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Galería - Storage Bucket</ion-title>
+    <ion-buttons slot="end">
+      @if (isAdmin()) {
+        <ion-button (click)="fileInput.click()" title="Subir imagen">
+          <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
+        </ion-button>
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onFileSelected($event)" />
+      }
+      <ion-button (click)="loadImages()" title="Actualizar">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="logout()" title="Cerrar sesión">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-note class="bucket-note">
+    Bucket: <code>{{ bucket }}</code> — {{ images().length }} imagen(es) encontradas
+  </ion-note>
+
+  @if (isLoading()) {
+    <div class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando imágenes…</p>
+    </div>
+  }
+
+  <!-- CARDS RESPONSIVAS (ion-grid) -->
+  <ion-grid>
+    <ion-row>
+      @for (image of images(); track image.path) {
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="image-card">
+            <img [src]="image.url" [alt]="image.name" class="image-preview" />
+            <ion-card-header>
+              <ion-card-subtitle>
+                <ion-badge color="primary">{{ bucket }}</ion-badge>
+              </ion-card-subtitle>
+              <ion-card-title class="image-title">{{ image.name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-note>
+                {{ image.contentType ?? 'imagen' }}
+                @if (image.size) {
+                  · {{ (image.size / 1024).toFixed(1) }} KB
+                }
+              </ion-note>
+              @if (isAdmin()) {
+                <ion-button
+                  size="small"
+                  fill="outline"
+                  color="danger"
+                  class="ion-margin-top"
+                  (click)="deleteImage(image.path)">
+                  <ion-icon slot="start" name="trash-outline"></ion-icon>
+                  Eliminar
+                </ion-button>
+              }
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      } @empty {
+        @if (!isLoading()) {
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-content class="empty-box">
+                <ion-icon name="images-outline" class="empty-icon"></ion-icon>
+                <h3>No hay imágenes en el bucket</h3>
+                <p>
+                  Sube una imagen desde el botón de la cabecera (necesitas rol
+                  admin) o carga ficheros en Supabase → Storage → Bucket
+                  <code>{{ bucket }}</code>.
+                </p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        }
+      }
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-toast
+  [isOpen]="isToastOpen"
+  [message]="toastMessage"
+  [duration]="2500"
+  (didDismiss)="setToastOpen(false)">
+</ion-toast>
